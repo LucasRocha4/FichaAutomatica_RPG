@@ -1,0 +1,784 @@
+{% load static %}
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FichaDnD</title>
+  <link
+    rel="stylesheet"
+    href="{% static 'css/charsheet.css' %}?v=2"
+  >
+</head>
+<body>
+  <div class="container mt-5">
+    <form class="charsheet" method="post" action="{% url 'criando' %}">
+      {% csrf_token %}
+      <header>
+        <section class="charname">
+          <label for="charname">{{ translations.charname_label }}</label>
+          <input name="charname" value="{{ charname }}"/>
+        </section>
+        <section class="misc">
+          <ul>
+            <li>
+              <label for="classlevel">{{ translations.classlevel_label }}</label>
+              <input name="classlevel" value="{{ classe }}"/>
+            </li>
+            <li>
+              <label for="background">{{ translations.background_label }}</label>
+              <input name="background" value="{{ background }}"/>
+            </li>
+            <li>
+              <label for="playername">{{ translations.playername_label }}</label>
+              <input name="playername" value="{{ charname }}"/>
+            </li>
+            <li>
+              <label for="race">{{ translations.race_label }}</label>
+              <input name="race" value="{{ race }}"/>
+            </li>
+            <li>
+              <label for="alignment">{{ translations.alignment_label }}</label>
+              <input name="alinhamento" value="{{ alinhamento }}"/>
+            </li>
+            <li>
+              <label for="experiencepoints">{{ translations.experiencepoints_label }}</label>
+              <input name="experiencepoints" value="{{ xp }}"/>
+            </li>
+          </ul>
+        </section>
+      </header>
+      <main>
+        <section>
+          <section class="attributes">
+            <div class="scores">
+              <ul>
+                <li>
+                  <div class="score">
+                    <label for="Strengthscore">{{ translations.strength_label }}</label>
+                    <input name="Strengthscore" value="{{ atributo.strength }}"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Strengthmod" value="{{ mod.str }}"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="score">
+                    <label for="Dexterityscore">{{ translations.dexterity_label }}</label>
+                    <input name="Dexterityscore" value="{{ atributo.dexterity }}"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Dexteritymod" value="{{ mod.dex }}"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="score">
+                    <label for="Constitutionscore">{{ translations.constitution_label }}</label>
+                    <input name="Constitutionscore" value="{{ atributo.constitution }}"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Constitutionmod" value="{{ mod.con }}"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="score">
+                    <label for="Wisdomscore">{{ translations.wisdom_label }}</label>
+                    <input name="Wisdomscore" value="{{ atributo.wisdom }}"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Wisdommod" value="{{ mod.wis }}"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="score">
+                    <label for="Intelligencescore">{{ translations.intelligence_label }}</label>
+                    <input name="Intelligencescore" value="{{ atributo.intelligence }}"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Intelligencemod" value="{{ mod.int }}"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="score">
+                    <label for="Charismascore">{{ translations.charisma_label }}</label>
+                    <input name="Charismascore" value="{{ atributo.charisma }}"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Charismamod" value="{{ mod.cha }}"/>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="attr-applications">
+              <div class="inspiration box">
+                <div class="label-container">
+                  <label for="inspiration">{{ translations.inspiration_label }}</label>
+                </div>
+                <input name="inspiration" type="checkbox" />
+              </div>
+              <div class="proficiencybonus box">
+                <div class="label-container">
+                  <label for="proficiencybonus">{{ translations.proficiencybonus_label }}</label>
+                </div>
+                <input name="proficiencybonus" value="{{ proficiencia }}"/>
+              </div>
+              <div class="saves list-section box">
+                <ul>
+                  <li>
+                    <label for="Strength-save">{{ translations.strength_label }}</label>
+                    <input
+                      name="Strength-save"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.str }}"
+                      data-atributo="str"
+                    />
+                    <input
+                      name="Strength-save-prof"
+                      type="checkbox"
+                      class="proficiencia"
+                      data-atributo="str"
+                    />
+                  </li>
+                  <li>
+                    <label for="Dexterity-save">{{ translations.dexterity_label }}</label>
+                    <input
+                      name="Dexterity-save"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.dex }}"
+                      data-atributo="dex"
+                    />
+                    <input
+                      name="Dexterity-save-prof"
+                      type="checkbox"
+                      class="proficiencia"
+                      data-atributo="dex"
+                    />
+                  </li>
+                  <li>
+                    <label for="Constitution-save">{{ translations.constitution_label }}</label>
+                    <input
+                      name="Constitution-save"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.con }}"
+                      data-atributo="con"
+                    />
+                    <input
+                      name="Constitution-save-prof"
+                      type="checkbox"
+                      class="proficiencia"
+                      data-atributo="con"
+                    />
+                  </li>
+                  <li>
+                    <label for="Wisdom-save">{{ translations.wisdom_label }}</label>
+                    <input
+                      name="Wisdom-save"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.wis }}"
+                      data-atributo="wis"
+                    />
+                    <input
+                      name="Wisdom-save-prof"
+                      type="checkbox"
+                      class="proficiencia"
+                      data-atributo="wis"
+                    />
+                  </li>
+                  <li>
+                    <label for="Intelligence-save">{{ translations.intelligence_label }}</label>
+                    <input
+                      name="Intelligence-save"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.int }}"
+                      data-atributo="int"
+                    />
+                    <input
+                      name="Intelligence-save-prof"
+                      type="checkbox"
+                      class="proficiencia"
+                      data-atributo="int"
+                    />
+                  </li>
+                  <li>
+                    <label for="Charisma-save">{{ translations.charisma_label }}</label>
+                    <input
+                      name="Charisma-save"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.cha }}"
+                      data-atributo="cha"
+                    />
+                    <input
+                      name="Charisma-save-prof"
+                      type="checkbox"
+                      class="proficiencia"
+                      data-atributo="cha"
+                    />
+                  </li>
+                </ul>
+                <div class="label">{{ translations.savingthrows_label }}</div>
+              </div>
+              <div class="skills list-section box">
+                <ul>
+                  <li>
+                    <label for="Acrobatics">Acrobatics <span class="skill">(Dex)</span></label>
+                    <input
+                      name="Acrobatics"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.dex }}"
+                      data-atributo="Acrobatics"
+                    />
+                    <input
+                      name="Acrobatics-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Acrobatics"
+                    />
+                  </li>
+                  <li>
+                    <label for="Animal Handling">Animal Handling <span class="skill">(Wis)</span></label>
+                    <input
+                      name="Animal Handling"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.wis }}"
+                      data-atributo="Animal Handling"
+                    />
+                    <input
+                      name="Animal Handling-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Animal Handling"
+                    />
+                  </li>
+                  <li>
+                    <label for="Arcana">Arcana <span class="skill">(Int)</span></label>
+                    <input
+                      name="Arcana"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.int }}"
+                      data-atributo="Arcana"
+                    />
+                    <input
+                      name="Arcana-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Arcana"
+                    />
+                  </li>
+                  <li>
+                    <label for="Athletics">Athletics <span class="skill">(Str)</span></label>
+                    <input
+                      name="Athletics"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.str }}"
+                      data-atributo="Athletics"
+                    />
+                    <input
+                      name="Athletics-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Athletics"
+                    />
+                  </li>
+                  <li>
+                    <label for="Deception">Deception <span class="skill">(Cha)</span></label>
+                    <input
+                      name="Deception"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.cha }}"
+                      data-atributo="Deception"
+                    />
+                    <input
+                      name="Deception-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Deception"
+                    />
+                  </li>
+                  <li>
+                    <label for="History">History <span class="skill">(Int)</span></label>
+                    <input
+                      name="History"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.int }}"
+                      data-atributo="History"
+                    />
+                    <input
+                      name="History-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="History"
+                    />
+                  </li>
+                  <li>
+                    <label for="Insight">Insight <span class="skill">(Wis)</span></label>
+                    <input
+                      name="Insight"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.wis }}"
+                      data-atributo="Insight"
+                    />
+                    <input
+                      name="Insight-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Insight"
+                    />
+                  </li>
+                  <li>
+                    <label for="Intimidation">Intimidation <span class="skill">(Cha)</span></label>
+                    <input
+                      name="Intimidation"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.cha }}"
+                      data-atributo="Intimidation"
+                    />
+                    <input
+                      name="Intimidation-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Intimidation"
+                    />
+                  </li>
+                  <li>
+                    <label for="Investigation">Investigation <span class="skill">(Int)</span></label>
+                    <input
+                      name="Investigation"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.int }}"
+                      data-atributo="Investigation"
+                    />
+                    <input
+                      name="Investigation-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Investigation"
+                    />
+                  </li>
+                  <li>
+                    <label for="Medicine">Medicine <span class="skill">(Wis)</span></label>
+                    <input
+                      name="Medicine"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.wis }}"
+                      data-atributo="Medicine"
+                    />
+                    <input
+                      name="Medicine-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Medicine"
+                    />
+                  </li>
+                  <li>
+                    <label for="Nature">Nature <span class="skill">(Int)</span></label>
+                    <input
+                      name="Nature"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.int }}"
+                      data-atributo="Nature"
+                    />
+                    <input
+                      name="Nature-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Nature"
+                    />
+                  </li>
+                  <li>
+                    <label for="Perception">Perception <span class="skill">(Wis)</span></label>
+                    <input
+                      name="Perception"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.wis }}"
+                      data-atributo="Perception"
+                    />
+                    <input
+                      name="Perception-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Perception"
+                    />
+                  </li>
+                  <li>
+                    <label for="Performance">Performance <span class="skill">(Cha)</span></label>
+                    <input
+                      name="Performance"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.cha }}"
+                      data-atributo="Performance"
+                    />
+                    <input
+                      name="Performance-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Performance"
+                    />
+                  </li>
+                  <li>
+                    <label for="Persuasion">Persuasion <span class="skill">(Cha)</span></label>
+                    <input
+                      name="Persuasion"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.cha }}"
+                      data-atributo="Persuasion"
+                    />
+                    <input
+                      name="Persuasion-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Persuasion"
+                    />
+                  </li>
+                  <li>
+                    <label for="Religion">Religion <span class="skill">(Int)</span></label>
+                    <input
+                      name="Religion"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.int }}"
+                      data-atributo="Religion"
+                    />
+                    <input
+                      name="Religion-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Religion"
+                    />
+                  </li>
+                  <li>
+                    <label for="Sleight of Hand">Sleight of Hand <span class="skill">(Dex)</span></label>
+                    <input
+                      name="Sleight of Hand"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.dex }}"
+                      data-atributo="Sleight of Hand"
+                    />
+                    <input
+                      name="Sleight of Hand-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Sleight of Hand"
+                    />
+                  </li>
+                  <li>
+                    <label for="Stealth">Stealth <span class="skill">(Dex)</span></label>
+                    <input
+                      name="Stealth"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.dex }}"
+                      data-atributo="Stealth"
+                    />
+                    <input
+                      name="Stealth-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Stealth"
+                    />
+                  </li>
+                  <li>
+                    <label for="Survival">Survival <span class="skill">(Wis)</span></label>
+                    <input
+                      name="Survival"
+                      placeholder="+0"
+                      type="text"
+                      value="{{ mod.wis }}"
+                      data-atributo="Survival"
+                    />
+                    <input
+                      name="Survival-prof"
+                      type="checkbox"
+                      class="pericia"
+                      data-atributo="Survival"
+                    />
+                  </li>
+                </ul>              
+              <div class="label">{{ translations.skills_label }}</div>
+              </div>
+            </div>
+          </section>
+
+          <div class="passive-perception box">
+            <div class="label-container">
+              <label for="passiveperception">{{ translations.passiveperception_label }}</label>
+            </div>
+            <input type="text"
+            id="passive-wisdom"
+            name="passive-wisdom"
+            placeholder="10"
+            readonly/>
+          </div>
+          <div class="otherprofs box textblock">
+            <label for="otherprofs">{{ translations.otherprofs_label }}</label>
+            <textarea name="otherprofs">{{ idiomas }}</textarea>
+          </div>
+        </section>
+
+        <section>
+          <section class="combat">
+            <div class="armorclass">
+              <div>
+                <label for="ac">{{ translations.armorclass_label }}</label>
+                <input name="ac" placeholder="10" type="text" value="{{ ca }}"/>
+              </div>
+            </div>
+            <div class="initiative">
+              <div>
+                <label for="initiative">{{ translations.initiative_label }}</label>
+                <input name="initiative" placeholder="+0" type="text" value="{{ mod.dex }}" />
+              </div>
+            </div>
+            <div class="speed">
+              <div>
+                <label for="speed">{{ translations.speed_label }}</label>
+                <input name="speed" placeholder="30" type="text" value="{{ speed }}"/>
+              </div>
+            </div>
+            <div class="hp">
+              <div class="regular">
+                <div class="max">
+                  <label for="maxhp">{{ translations.maxhp_label }}</label>
+                  <input name="maxhp" placeholder="10" type="text" value="{{ hp }}"/>
+                </div>
+                <div class="current">
+                  <label for="currenthp">{{ translations.currenthp_label }}</label>
+                  <input name="currenthp" type="text"value="{{ hp }}"/>
+                </div>
+              </div>
+              <div class="temporary">
+                <label for="temphp">{{ translations.temphp_label }}</label>
+                <input name="temphp" type="text" />
+              </div>
+            </div>
+
+            <div class="rolls-wrapper">
+              <div class="hitdice">
+                <div>
+                  <div class="total">
+                    <label for="totalhd">{{ translations.totalhd_label }}</label>
+                    <input name="totalhd" placeholder="2d10" type="text"value="{{ total_hd }}"/>
+                  </div>
+                  <div class="remaining">
+                    <label for="remaininghd">{{ translations.remaininghd_label }}</label>
+                    <input name="remaininghd" type="text" value="{{ total_hd }}"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="death-saves">
+                <div>
+                  <div class="label-container">
+                    <label>{{ translations.death_saves_label }}</label>
+                  </div>
+                  <div class="marks">
+                    <div class="death-successes">
+                      <label>{{ translations.successes_label }}</label>
+                      <div class="bubbles">
+                        <input name="deathsuccess1" type="checkbox" />
+                        <input name="deathsuccess2" type="checkbox" />
+                        <input name="deathsuccess3" type="checkbox" />
+                      </div>
+                    </div>
+                    <div class="death-fails">
+                      <label>{{ translations.failures_label }}</label>
+                      <div class="bubbles">
+                        <input name="deathfail1" type="checkbox" />
+                        <input name="deathfail2" type="checkbox" />
+                        <input name="deathfail3" type="checkbox" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </section>
+          <section class="attacksandspellcasting">
+            <div>
+              <label>{{ translations.attacks_spellcasting_label }}</label>
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ translations.atkname_label }}</th>
+                    <th>{{ translations.atkbonus_label }}</th>
+                    <th>{{ translations.atkdamage_label }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input name="atkname1" type="text" value="{{ atkname1 }}" /></td>
+                    <td><input name="atkbonus1" type="text" value="{{ atkbonus1 }}" /></td>
+                    <td><input name="atkdamage1" type="text" value="{{ atkdamage1 }}" /></td>
+                  </tr>
+                  <tr>
+                    <td><input name="atkname2" type="text" value="{{ atkname2 }}" /></td>
+                    <td><input name="atkbonus2" type="text" value="{{ atkbonus2 }}" /></td>
+                    <td><input name="atkdamage2" type="text" value="{{ atkdamage2 }}" /></td>
+                  </tr>
+                  <tr>
+                    <td><input name="atkname3" type="text" value="{{ atkname3 }}" /></td>
+                    <td><input name="atkbonus3" type="text" value="{{ atkbonus3 }}" /></td>
+                    <td><input name="atkdamage3" type="text" value="{{ atkdamage3 }}" /></td>
+                  </tr>
+                </tbody>
+              </table>
+              <textarea></textarea>
+            </div>
+          </section>
+          <section class="equipment">
+            <div>
+              <label>{{ translations.equipment_label }}</label>
+              <div class="money">
+                <ul>
+                  <li>
+                    <label for="cp">{{ translations.cp_label }}</label>
+                    <input name="cp" />
+                  </li>
+                  <li>
+                    <label for="sp">{{ translations.sp_label }}</label>
+                    <input name="sp" />
+                  </li>
+                  <li>
+                    <label for="ep">{{ translations.ep_label }}</label>
+                    <input name="ep" />
+                  </li>
+                  <li>
+                    <label for="gp">{{ translations.gp_label }}</label>
+                    <input name="gp" />
+                  </li>
+                  <li>
+                    <label for="pp">{{ translations.pp_label }}</label>
+                    <input name="pp" />
+                  </li>
+                </ul>
+              </div>
+            
+              <div class="equipment-list">
+                <label for="equipamentos">{{ translations.equipment_items_label }}</label>
+                <textarea id="equipamentos" name="equipamentos" rows="12" style="width: 100%; height: 200px; margin-top: -20px; font-size: 10px;">{{ formatted_all_equipment }}</textarea>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section class="flavor">
+            <div class="personality">
+              <label for="personality">{{ translations.personality_label }}</label>
+              <textarea name="personality">{{ personality_traits }}</textarea>
+            </div>
+            <div class="ideals">
+              <label for="ideals">{{ translations.ideals_label }}</label>
+              <textarea name="ideals">{{ ideals }}</textarea>
+            </div>
+            <div class="bonds">
+              <label for="bonds">{{ translations.bonds_label }}</label>
+              <textarea name="bonds">{{ bonds }}</textarea>
+            </div>
+            <div class="flaws">
+              <label for="flaws">{{ translations.flaws_label }}</label>
+              <textarea name="flaws">{{ flaws }}</textarea>
+            </div>
+          </section>
+          <section class="features">
+            <div>
+              <label for="features">{{ translations.features_traits_label }}</label>
+              <textarea name="features"></textarea>
+            </div>
+          </section>
+        </section>
+
+      </main>
+    </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  {{ saving_throw_proficiencies|json_script:"profSaves" }}
+  {{ random_skill_proficiencies   |json_script:"profSkills" }}
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profSavesEl  = document.getElementById('profSaves');
+      const profSkillsEl = document.getElementById('profSkills');
+    
+      let profSaves = [], profSkills = [];
+      try {
+        profSaves  = profSavesEl  ? JSON.parse(profSavesEl.textContent)  : [];
+        profSkills = profSkillsEl ? JSON.parse(profSkillsEl.textContent) : [];
+      } catch(e) {
+        console.error("Erro ao parsear JSON de proficiencies:", e);
+      }
+    
+      console.log("profSaves =", profSaves);
+      console.log("profSkills=", profSkills);
+    
+      const profInput = document.querySelector('input[name="proficiencybonus"]');
+    
+      function applyProficiencyBonus(checkbox, numberInput) {
+        let profValue = parseInt(profInput.value, 10);
+        if (isNaN(profValue)) profValue = parseInt(profInput.placeholder, 10) || 0;
+        const baseValue = parseInt(numberInput.dataset.base, 10) || 0;
+        const result = checkbox.checked ? baseValue + profValue : baseValue;
+        numberInput.value = (result >= 0 ? '+' : '') + result;
+      }
+    
+      document.querySelectorAll('input[type="checkbox"][data-atributo]').forEach(checkbox => {
+        const attr = checkbox.dataset.atributo;
+        const numberInput = document.querySelector(
+          `input[data-atributo="${attr}"]:not([type="checkbox"])`
+        );
+        if (!numberInput) return;
+    
+        numberInput.dataset.base = parseInt(numberInput.value, 10) || 0;
+        checkbox.addEventListener('change', () => applyProficiencyBonus(checkbox, numberInput));
+    
+        if (checkbox.classList.contains('proficiencia') && profSaves.includes(attr)) {
+          checkbox.checked = true;
+          applyProficiencyBonus(checkbox, numberInput);
+        }
+    
+        if (checkbox.classList.contains('pericia') && profSkills.includes(attr)) {
+          console.log(`Auto‑marcando perícia ${attr}`);  
+          checkbox.checked = true;
+          applyProficiencyBonus(checkbox, numberInput);
+        }
+      });
+    
+      const perceptionInput    = document.querySelector('input[name="Perception"]');
+      const passiveWisdomInput = document.getElementById('passive-wisdom');
+      function updatePassiveWisdom() {
+        if (!perceptionInput || !passiveWisdomInput) return;
+        const bonus = parseInt(perceptionInput.value, 10) || 0;
+        passiveWisdomInput.value = 10 + bonus;
+      }
+      if (perceptionInput) {
+        updatePassiveWisdom();
+        perceptionInput.addEventListener('input', updatePassiveWisdom);
+      }
+    });
+  </script>       
+</body>
+</html>

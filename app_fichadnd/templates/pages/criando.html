@@ -1,0 +1,135 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>FichaDnD</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/charsheet.css' %}">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #141415 !important;
+      overflow: hidden; /* remove rolagem da página */
+    }
+
+    .lang-selector {
+      position: fixed;
+      top: 80px;
+      left: 5vw;
+      background: rgba(255,255,255,0.9);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      z-index: 100;
+    }
+
+    .lang-selector label {
+      margin: 0 0.5rem;
+    }
+
+    .btn-download {
+      position: fixed;
+      top: 140px;
+      left: 5vw;
+      z-index: 100;
+    }
+
+    .preview-box {
+      position: fixed;
+      top: 80px;
+      right: 5vw;
+      width: 60vw;
+      height: calc(100vh - 100px);
+      border: 2px solid #333;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      background: white;
+      padding: 1rem;
+      box-sizing: border-box;
+      overflow: auto;
+    }
+
+    .preview-box [class*="bg-"] {
+      background-color: transparent !important;
+    }
+
+    .preview-box .scale-wrapper > * {
+      background-color: white !important;
+    }
+
+    .spell-slot.bg-black {
+      background-color: #000 !important;
+    }
+  </style>
+
+  <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.js"></script>
+</head>
+
+<body>
+  {% include "pages/components/navbar.html" %}
+
+
+  <div class="lang-selector">
+    <label for="lang-range">PT</label>
+    <input type="range" id="lang-range" min="0" max="1" step="1" value="{% if current_lang == 'en' %}1{% else %}0{% endif %}">
+    <label for="lang-range">EN</label>
+  </div>
+
+  <button onclick="gerarPDF()" class="btn btn-primary btn-download">Baixar PDF</button>
+
+  <div class="preview-box">
+    <div class="scale-wrapper">
+      {% include 'pages/fichadnd.html' with translations=translations %}
+      {% include "pages/fichadnd2pag.html" %}
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    document.getElementById('lang-range').addEventListener('change', function(e) {
+      const lang = e.target.value === '1' ? 'en' : 'pt';
+      const url = new URL(window.location);
+      url.searchParams.set('lang', lang);
+      window.location = url;
+    });
+
+    function gerarPDF() {
+      const preview = document.querySelector('.preview-box');
+      const wrapper = preview.querySelector('.scale-wrapper');
+      document.querySelectorAll('.navbar, .lang-selector, .btn-download').forEach(el => el.style.display = 'none');
+
+      const origHeight = preview.style.height;
+      const origOverflow = preview.style.overflow;
+      preview.style.height = 'auto';
+      preview.style.overflow = 'visible';
+      wrapper.style.transform = 'none';
+      wrapper.style.width = '100%';
+
+      const opt = {
+        margin: 0.5,
+        filename: `ficha_{{ charname }}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(wrapper).save().then(() => {
+        document.querySelectorAll('.navbar, .lang-selector, .btn-download').forEach(el => el.style.display = 'flex');
+        wrapper.style.transform = 'scale(0.8)';
+        wrapper.style.width = '125%';
+        preview.style.height = origHeight;
+        preview.style.overflow = origOverflow;
+      });
+    }
+  </script>
+</body>
+</html>

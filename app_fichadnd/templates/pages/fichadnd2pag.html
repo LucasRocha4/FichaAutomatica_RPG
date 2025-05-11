@@ -1,0 +1,133 @@
+
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+  <div id="app" class="bg-gray-100 min-h-screen p-4 max-w-7xl mx-auto px-4">
+        <div class="spell-card rounded-lg shadow-lg p-6 mb-8 border-2 border-gray-800 bg-white">
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-800 text-center">Class Name</label>
+                    <input type="text" v-model="characterClass" class="w-full p-2 border-2 border-gray-700 rounded bg-white focus:outline-none focus:ring-2 focus:ring-black" placeholder="Character Class">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-800 text-center">Attack Bonus</label>
+                    <input type="number" v-model="spellAttackBonus" class="w-full p-2 border-2 border-gray-700 rounded bg-white focus:outline-none focus:ring-2 focus:ring-black">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-800 text-center">Save DC</label>
+                    <input type="number" v-model="spellSaveDC" class="w-full p-2 border-2 border-gray-700 rounded bg-white focus:outline-none focus:ring-2 focus:ring-black">                            
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-800 text-center">Ability</label>
+                    <input type="text" v-model="spellcastingAbility" class="w-full p-2 border-2 border-gray-700 rounded bg-white focus:outline-none focus:ring-2 focus:ring-black" 
+                           placeholder="INT/WIS/CHA">
+                </div>
+            </div>
+        </div>
+
+        <div v-for="level in 9" :key="level" class="mb-8 spell-card rounded-lg shadow-lg p-6 border-2 border-gray-800 bg-white">
+            <h2 class="text-2xl font-bold mb-6 text-black level-header pb-2 text-center">Level {{ level }} Spells</h2>
+            
+            <div class="mb-4">
+                <label class="block text-black font-bold mb-2">Spell Slots</label>
+                <div class="flex space-x-2">
+                    <!-- Itera nos slots e usa index como key -->
+                    <div v-for="(_, index) in spellSlots[level]"
+                         :key="index"
+                         @click="toggleSpellSlot(level, index)"
+                         :class="['w-8 h-8 spell-slot rounded-full cursor-pointer border-2 border-gray-700',
+                                 spellSlots[level][index] ? 'bg-black' : 'bg-white']">
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div v-for="(spell, index) in spellsByLevel[level]" :key="index" 
+                     class="border-2 border-gray-700 rounded-lg p-4 hover:bg-gray-50 transition-all duration-300 spell-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <input type="text" v-model="spell.name" 
+                                   class="font-bold text-lg mb-2 border-b-2 border-transparent focus:border-gray-700 focus:outline-none bg-transparent w-full text-black"
+                                   placeholder="Spell Name">
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-800">Casting Time</label>
+                                    <input type="text" v-model="spell.castingTime" class="w-full p-1 border-2 border-gray-700 rounded bg-white focus:outline-none focus:ring-2 focus:ring-black max-w-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-800">Duration</label>
+                                    <input type="text" v-model="spell.duration" class="w-full p-1 border-2 border-gray-700 rounded bg-white focus:outline-none focus:ring-2 focus:ring-black max-w-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Components</label>
+                                    <input type="text" v-model="spell.components" class="w-full p-1 border rounded max-w-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Duration</label>
+                                    <input type="text" v-model="spell.duration" class="w-full p-1 border rounded max-w-xs">
+                                </div>
+                            </div>
+                        </div>
+                        <button @click="removeSpell(level, index)" 
+                                class="text-red-500 hover:text-red-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button @click="addSpell(level)" 
+                        class="w-full py-3 bg-gray-200 hover:bg-gray-300 text-black rounded-lg font-bold text-lg border-2 border-gray-700">
+                    ✦ Add Spell ✦
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const { createApp, ref, reactive } = Vue;
+
+        createApp({
+            setup() {
+                const characterClass = ref('wizard');
+                const spellcastingAbility = ref('INT');
+                const spellAttackBonus = ref(0);
+                const spellSaveDC = ref(0);
+
+                const maxSpellSlots = {
+                    1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 2, 8: 1, 9: 1
+                };
+
+                const spellSlots = reactive({
+                    1: Array(4).fill(false),
+                    2: Array(3).fill(false),
+                    3: Array(3).fill(false),
+                    4: Array(3).fill(false),
+                    5: Array(3).fill(false),
+                    6: Array(2).fill(false),
+                    7: Array(2).fill(false),
+                    8: Array(1).fill(false),
+                    9: Array(1).fill(false)
+                });
+
+                const spellsByLevel = reactive({ 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] });
+
+                const toggleSpellSlot = (level, index) => {
+                    spellSlots[level][index] = !spellSlots[level][index];
+                };
+
+                const addSpell = (level) => {
+                    spellsByLevel[level].push({ name: '', castingTime: '', range: '60 ft', components: '', duration: '' });
+                };
+
+                const removeSpell = (level, index) => {
+                    spellsByLevel[level].splice(index, 1);
+                };
+
+                return { characterClass, spellcastingAbility, spellAttackBonus, spellSaveDC,
+                         maxSpellSlots, spellSlots, spellsByLevel,
+                         toggleSpellSlot, addSpell, removeSpell };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

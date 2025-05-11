@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Login Portal</title>
+    <meta name="description" content="A minimalist RPG-themed login portal with dark aesthetics">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #141415; color: white; }
+
+        @font-face {
+            font-family: 'RPGFont';
+            src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        }
+        .rpg-border {
+            border: 2px solid #bbb;
+            box-shadow: 4px 4px 0px #000;
+        }
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80% { content: '...'; }
+        }
+        .btn-text {
+            position: relative;
+        }
+        .btn-text::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background-color: black;
+            transition: all 0.3s ease-out;
+            transform: translateX(-50%);
+        }
+        button:hover .btn-text::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    {% include "pages/components/navbar.html" %}
+    <div id="app" class="bg-[#141415] min-h-screen flex items-center justify-center p-4 -mt-16">
+        <div class="max-w-md w-full space-y-8 p-8 rpg-border bg-[#1e1e1e] rounded">
+            <div class="text-center">
+                <h1 class="text-2xl font-bold text-white mb-6">[ LOGIN ]</h1>
+                <p class="text-[#bbb] text-sm mb-8">Para cruzar a ponte desvende o "login"! Hehehe...</p>
+            </div>
+            
+            <form @submit.prevent="handleLogin" class="space-y-6">
+                <div>
+                    <label class="text-[#bbb] text-sm block mb-2">Email</label>
+                    <input 
+                        v-model="username"
+                        type="text"
+                        class="w-full px-4 py-2 bg-white border-2 border-[#bbb] text-black focus:outline-none focus:border-white rounded"
+                        :disabled="isLoading"
+                    >
+                </div>
+                
+                <div>
+                    <label class="text-[#bbb] text-sm block mb-2">Senha</label>
+                    <input 
+                        v-model="password"
+                        type="password"
+                        class="w-full px-4 py-2 bg-white border-2 border-[#bbb] text-black focus:outline-none focus:border-white rounded"
+                        :disabled="isLoading"
+                    >
+                </div>
+                
+                <button 
+                    type="submit"
+                    class="w-full py-3 px-4 bg-[#bbb] hover:bg-white text-black font-bold rounded rpg-border transition-colors"
+                    :disabled="isLoading"
+                >
+                    <span v-if="!isLoading" class="btn-text">ENVIAR</span>
+                    <span v-else class="loading-dots">Loading</span>
+                </button>
+            </form>
+            
+            <div class="text-center mt-6">
+                <a href="#" class="text-[#bbb] hover:text-white text-sm">Esqueceu sua senha?</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const username = ref('');
+                const password = ref('');
+                const isLoading = ref(false);
+
+                const handleLogin = async () => {
+                    if (!username.value || !password.value) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
+
+                    isLoading.value = true;
+                    
+                    try {
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        console.log('Login attempt:', { username: username.value });
+                    } catch (error) {
+                        console.error('Login failed:', error);
+                    } finally {
+                        isLoading.value = false;
+                    }
+                };
+
+                return {
+                    username,
+                    password,
+                    isLoading,
+                    handleLogin
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<style>
+  .navbar {
+  background-color: #00087a !important;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  }
+</style> 
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top w-100 m-0 p-0">
+  <div class="container-fluid px-4 py-2">
+    <a class="navbar-brand text-white" href="{% url 'home' %}">FichaDnD</a>
+    <a href="{% url 'login' %}" class="btn btn-outline-light ms-auto">
+      Login
+    </a>
+  </div>
+</nav>
+
+<div style="height:56px; width:100%;"></div>
